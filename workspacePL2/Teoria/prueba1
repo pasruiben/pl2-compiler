@@ -1,0 +1,83 @@
+modulo pila 
+
+inst clase Elemento
+{
+   oculto entero e;
+   
+   consultar() dev entero
+   {
+      dev e;
+   }
+   modificar(entero n)
+   {
+      e := n;
+   }  
+}
+
+// Pila con 100 elementos como maximo 
+inst clase Pila  
+{
+   oculto formacion 100 Elemento almacen;
+   oculto entero cima;
+   
+   iniciar()
+   {
+  	cima := 0;
+   }
+
+   estaLlena() dev logico
+   {
+	si (cima = 100) entonces
+		dev cierto;
+	sino
+		dev falso;
+	finsi
+   }
+
+   apilar(Elemento elem)
+   {
+      si (no estaLlena( ) ) entonces
+		cima := cima + 1;
+		almacen[cima] := elem;
+	  finsi   
+   }   
+   
+   estaVacia() dev logico
+   {
+	si (cima = 0) entonces
+		dev cierto;
+	sino
+		dev falso;
+	finsi
+   }
+   
+   desapilar() dev Elemento
+   {
+      si (no estaVacia()) entonces 
+		cima := cima - 1;
+		dev almacen[cima+1];
+	sino
+		dev almacen[1];
+	finsi
+   }   
+}
+
+
+clase Programa
+{
+inicio()
+{
+	Elemento e;
+	Pila p;
+	entero i;
+	p:=crear(Pila);
+	p.iniciar();
+      i :=1;
+      mientras (i<=10) hacer
+	    e := crear(Elemento);
+          e.modificar(i);
+          p.apilar(e);
+          i:=i+1;
+       finmientras
+}
+}

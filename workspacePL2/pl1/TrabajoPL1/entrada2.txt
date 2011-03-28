@@ -1,0 +1,51 @@
+clase ejemplo2
+{
+	entero paso := 2;
+	
+	punto avanza_derecha(punto inicial)
+	{
+		punto final := inicial;
+		
+		entero nueva_x := final.get_x() + paso;
+		
+		final.set_x(nueva_x);
+		
+		devuelve final;
+	}
+	
+	void set_paso(entero nuevo)
+	{
+		paso := nuevo;
+	}
+	
+	entero get_paso()
+	{
+		devuelve paso;
+	}
+}
+
+clase punto
+{
+	entero x;
+	entero y;
+	
+	entero get_x()
+	{
+		devuelve x;
+	}
+	
+	entero get_y()
+	{
+		devuelve y;
+	}
+	
+	void set_x(entero nuevo)
+	{
+		x := nuevo;
+	}
+	
+	void set_y(entero nuevo)
+	{
+		y := nuevo;
+	}
+}

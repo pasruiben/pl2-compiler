@@ -1,0 +1,44 @@
+clase mensajes
+{	
+	//devuelve el mensaje adecuado al identificador y el idioma
+	cadena obtiene_mensaje(entero id, cadena idioma)
+	{
+		cadena resultado;
+	
+		si (id = 0)
+		{
+			si (idioma = "es")
+			{
+				resultado := "Has ganado";
+			}
+			sino
+			{
+				resultado := "You win";
+			}
+		}
+		sinosi (id = 1)
+		{
+			si (idioma = "es")
+			{
+				resultado := "Has perdido";
+			}
+			sino
+			{
+				resultado := "You lose";
+			}
+		}
+		sino
+		{
+			si (idioma = "es")
+			{
+				resultado := "Identificador de mensaje incorrecto";
+			}
+			sino
+			{
+				resultado := "Wrong message id";
+			}
+		}
+		
+		devuelve resultado;
+	}
+}

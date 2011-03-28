@@ -1,0 +1,15 @@
+// $ANTLR : Anasint.g -> AnalexTokenTypes.txt$
+Analex    // output token vocab name
+NUEVA_LINEA=4
+BLANCO=5
+DIGITO=6
+NUMERO=7
+PYC=8
+MAS=9
+MENOS=10
+POR=11
+DIV=12
+PA=13
+PC=14
+IDENT=15
+ASIG=16
