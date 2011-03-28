@@ -37,6 +37,8 @@ tokens
 	INSTRUCCION;
 	CABECERA;
 	CAMPO;
+	RETORNO;
+	LISTA_EXPRESIONES;
 }
 
 {		
@@ -58,6 +60,28 @@ tokens
 	Ambito ambito=new Ambito(nombre.getText(),tipo,null,pilaAmbitos.ambitoActual())	;
 	pilaAmbitos.apilarAmbito(ambito);
 
+	}
+	
+	public void ambitoAbrirFuncion(AST nombre)
+	{
+		if (pilaAmbitos.ambitoActual().getTipo() != "PROGRAMA")
+			System.out.println("ERROR, LA PILA DE AMBITOS NO ES CORRECTA");
+		
+		Ambito ambito = new Ambito(nombre.getText(),"FUNCION",null,pilaAmbitos.ambitoActual());
+		pilaAmbitos.apilarAmbito(ambito);
+	}
+	
+	public void ambitoCerrarFuncion()
+	{
+		if(pilaAmbitos.isEmpty())
+			System.out.println("ERROR, LA PILA ESTA VACIA");		
+			
+			//System.out.println(pilaAmbitos.ambitoActual().getTipo());
+			
+		if(!pilaAmbitos.ambitoActual().getTipo().equals("FUNCION"))
+		    System.out.println("ERROR, EL AMBITO ACTUAL NO ES FUNCION");
+		else
+			pilaAmbitos.desapilarAmbito();
 	}
 	
 	public void ambitoCerrar(){
@@ -88,12 +112,14 @@ tokens
 	
 	    Simbolo simbolo = new Simbolo(nombre,arbol);
 	
+		System.out.println("Constante: "+nombre);
+	
 	    int error = pilaAmbitos.ambitoActual().setDeclaracion(simbolo);
 	
 	    if(error==-1)
 	    {
 	            JOptionPane.showMessageDialog(jContentPane, nombre+
-	            " : ERROR, YA HAY UN SÍMBOLO INSTALADO CON EL MISMO NOMBRE", "Error", JOptionPane.INFORMATION_MESSAGE);
+	            " : ERROR, YA HAY UN SIMBOLO INSTALADO CON EL MISMO NOMBRE", "Error", JOptionPane.INFORMATION_MESSAGE);
 	            System.exit(1);
 	    }
 	
@@ -106,13 +132,15 @@ tokens
 	
 	    AST arbol = #(#[DEC_TIPO,"registro"], astFactory.dupTree(nombreRegistro), dec_campos);
 	
+		System.out.println("Registro: "+nombreRegistro);
+	
 	    Simbolo simbolo = new Simbolo(nombre,arbol);
 	
 	    int error = pilaAmbitos.ambitoActual().setDeclaracion(simbolo);
 	
 	    if(error==-1)
 	    {
-	        JOptionPane.showMessageDialog(jContentPane, nombre+" : ERROR, YA HAY UN SÍMBOLO INSTALADO CON EL MISMO NOMBRE",
+	        JOptionPane.showMessageDialog(jContentPane, nombre+" : ERROR, YA HAY UN SiMBOLO INSTALADO CON EL MISMO NOMBRE",
 	                                                "Error", JOptionPane.INFORMATION_MESSAGE);
 	        System.exit(1);
 	    }
@@ -126,10 +154,14 @@ tokens
 		AST result = astFactory.dupTree(cabecera);
 		AST ultimoHermano = result;
 		
+		System.out.println("Ultimo hermano: "+ultimoHermano);
+		
 		//crea nodo var
 		AST var = new CommonAST();
 		var.setText(listaVars.getText());
 		var.setType(listaVars.getType());
+		
+		System.out.println("Variable: "+var.getText()+ " Tipo: "+var.getType());
 		
 		//añade el nodo tipo
 		var.setNextSibling(astFactory.dupTree(tipo));
@@ -144,7 +176,7 @@ tokens
 		
 		if (error == -1)
 		{
-	        JOptionPane.showMessageDialog(jContentPane, nombre+" : ERROR, YA HAY UN SÍMBOLO INSTALADO CON EL MISMO NOMBRE",
+	        JOptionPane.showMessageDialog(jContentPane, nombre+" : ERROR, YA HAY UN SiMBOLO INSTALADO CON EL MISMO NOMBRE",
 	        								"Error", JOptionPane.INFORMATION_MESSAGE);
 	        System.exit(1);
 		}
@@ -177,7 +209,7 @@ tokens
 			
 			if (error==-1)
 			{
-				JOptionPane.showMessageDialog(jContentPane, nombre+" : ERROR, YA HAY UN SÍMBOLO INSTALADO CON EL MISMO NOMBRE",
+				JOptionPane.showMessageDialog(jContentPane, nombre+" : ERROR, YA HAY UN SiMBOLO INSTALADO CON EL MISMO NOMBRE",
 			        								"Error", JOptionPane.INFORMATION_MESSAGE);
 				System.exit(1);
 			}
@@ -190,18 +222,62 @@ tokens
         return result;
 	}
                 
-    
+    public AST creaDeclaracionFuncion(AST cabecera_funcion, AST cuerpo)
+ 	{
+ 		AST arbol=#(#[FUNC,"funcion"], astFactory.dupTree(cabecera_funcion), astFactory.dupTree(cuerpo));
+ 		String nombre = arbol.getFirstChild().getFirstChild().getText();
+ 		Simbolo simbolo = new Simbolo(nombre, arbol);
+ 		
+ 		int error = pilaAmbitos.ambitoActual().setDeclaracion(simbolo);
+ 	
+ 		if(error==-1)
+ 		{
+ 			JOptionPane.showMessageDialog(
+								jContentPane,
+								nombre+" : ERROR, YA HAY UN SIMBOLO INSTALADO CON EL MISMO NOMBRE",
+								"Error",
+								JOptionPane.INFORMATION_MESSAGE);
+ 		 	System.exit(1);
+ 		}
+ 		
+ 		return arbol;
+	}
+	
+	public AST creaDeclaracionRetorno(AST nombreVariable, AST tipo)
+ 	{
+ 		String nombre = nombreVariable.getText();
+ 		
+ 		AST arbol = #(#[RETORNO,"retorno"], astFactory.dupTree(nombreVariable), astFactory.dupTree(tipo));
+ 		
+ 		Simbolo simbolo = new Simbolo(nombre,arbol);
+ 		
+ 		int error = pilaAmbitos.ambitoActual().setDeclaracion(simbolo);
+ 		
+ 		if(error==-1)
+ 		{
+ 			JOptionPane.showMessageDialog(
+								jContentPane,
+								nombre+" : ERROR, YA HAY UN SIMBOLO INSTALADO CON EL MISMO NOMBRE",
+								"Error",
+								JOptionPane.INFORMATION_MESSAGE);
+ 		 	System.exit(1);
+ 		}
+ 		
+ 		return arbol;
+ 	}
 	
  
 ///////////////////////////FUNCIONES TIPO C : TRATAMIENTO ACCESOS SIMPLES/////////////////////////////////		
 	
 	public AST ambitoTratarAccesoSimple(AST ident)
-	{
+	{	
 		AST declaracionAcceso=null;
 		AST arbol=null;
 		String nombre=ident.getText();
 		Simbolo simbolo=pilaAmbitos.buscarSimbolo(nombre);
 		
+		System.out.println("Acceso simple: "+nombre);
+
 		if(simbolo!=null)
 		{
 			declaracionAcceso=simbolo.getDeclaracion();	
@@ -228,6 +304,8 @@ tokens
 	{
 		String nombre=ident.getText();
 		Ambito amb=pilaAmbitos.ambitoActual();
+		
+		System.out.println("Ambito: "+amb.getTipo());
 		
 		while(amb!=null && amb.getTipo()!="PROGRAMA")
 			amb=amb.getContenedor();
@@ -284,8 +362,8 @@ constantes : CONST^ (declaraciones_constantes)+
 		   ;
 		   		   
 declaraciones_constantes! : i:IDENT IGUAL! e:expresion PUNTO_Y_COMA!
-							{#declaraciones_constantes = creaDeclaracionConstante(#i,#e);}
 							//{#declaraciones_constantes = #(#[CONSTANTE,"constante"],#i,#e);}
+							{#declaraciones_constantes = creaDeclaracionConstante(#i,#e);}
 						  ;
 
 tipos : TYPE^ (declaraciones_tipos)+  
@@ -293,8 +371,8 @@ tipos : TYPE^ (declaraciones_tipos)+
 	  ;
 
 declaraciones_tipos! : i:IDENT IGUAL! REGISTRO! c:campos END!
+						//{#declaraciones_tipos = #(#[DEC_TIPO,"dec_tipo"],#i,#c);} 
 						{#declaraciones_tipos = creaDeclaracionRegistro(#i, #c);}
-					   //{#declaraciones_tipos = #(#[DEC_TIPO,"dec_tipo"],#i,#c);} 
 				     ;
 
 campos : (campo)+
@@ -320,14 +398,17 @@ variable! : t:tipo l:lista_vars
 lista_vars : IDENT (COMA! IDENT)*
 		   ;
 
-funcion : cabecera_funcion cuerpo_funcion
-			{#funcion = #(#[FUNC,"funcion"],##);}
+funcion : ca:cabecera_funcion cu:cuerpo_funcion {ambitoCerrarFuncion();}
+		 //{#funcion = #(#[FUNC,"funcion"],##);}
+		 {#funcion = creaDeclaracionFuncion(#ca,#cu); }
 		;
 
 cabecera_funcion : 
-	FUNCION! (tipo)? IDENT PARENTESIS_ABIERTO! (declaraciones_parametros)* PARENTESIS_CERRADO!  
+	FUNCION! (t:tipo)? i:IDENT {ambitoAbrirFuncion(#i);} PARENTESIS_ABIERTO! (declaraciones_parametros)* PARENTESIS_CERRADO!  
+	{creaDeclaracionRetorno(#i, #t);}
 	{#cabecera_funcion = #(#[CABECERA,"cabecera"],##);}
 	;
+	
 	
 cuerpo_funcion : instrucciones END!
 				{#cuerpo_funcion = #(#[CUERPO,"cuerpo"],##);}	
@@ -354,7 +435,7 @@ cuerpo : BEGIN! instrucciones END!
 
 tipo : tipo_simple {#tipo = #(#[TIPO,"tipo"],##);}
 	 | tipo_compuesto {#tipo = #(#[TIPO,"tipo"],##);}
-	 | IDENT {#tipo = #(#[TIPO,"tipo"],##);}
+	 | i:IDENT {#tipo = ambitoTratarIdentTipo(#i);}
 	 ;
 
 tipo_simple : rango
@@ -377,8 +458,11 @@ tipo_compuesto : array
 array : ARRAY^ declaracion_array ;
 
 declaracion_array : 
-	CORCHETE_ABIERTO! indice COMA! indice CORCHETE_CERRADO! OF! tipo_simple
+	CORCHETE_ABIERTO! indices CORCHETE_CERRADO! OF! tipo_simple
 	;
+
+indices : indice (COMA! indice)*
+		;
 
 indice : ((MENOS)? LIT_ENTERO PUNTO PUNTO) => rango 
 	   | expresion
@@ -417,21 +501,21 @@ asignacion! : e1:expresion ASIGNACION e2:expresion
 			{#asignacion = #(#[ASIG,"asignacion"],#e1,#e2);} 
 		    ;			
 
-llamada_rutina : acceso PARENTESIS_ABIERTO! argumentos PARENTESIS_CERRADO!
+llamada_rutina : acceso PARENTESIS_ABIERTO! lista_expresiones PARENTESIS_CERRADO!
 				{#llamada_rutina = #(#[LLAMADA,"llamada"],##);}
 			   | rutina_especial
 			   ;
 			   
-argumentos : IDENT (COMA! IDENT)*
-			{#argumentos = #(#[ARGUMENTOS,"argumentos"],##);}
-		   | 
-		   ;
+lista_expresiones : expresion (COMA! expresion)*
+					{#lista_expresiones = #(#[LISTA_EXPRESIONES,"lista_expresiones"],##);}
+		   		  | 
+		   		  ;
 			   
 rutina_especial : LEER PARENTESIS_ABIERTO! expresion PARENTESIS_CERRADO!
 			    | ESCRIBIR PARENTESIS_ABIERTO! expresion (COMA! expresion)* PARENTESIS_CERRADO!
 			    ;		
 			   
-condicional : SI^ expresion contenido SINO^ contenido
+condicional : SI^ expresion contenido (SINO^ contenido)?
 			;
 		 	
 contenido : instruccion_simple PUNTO_Y_COMA! {#contenido = #(#[CONTENIDO,"contenido"],##);} 
@@ -447,11 +531,18 @@ iteracion : MIENTRAS^ expresion HACER! contenido
 iteracion_acotada : DESDE^ asignacion iteracion_tipo
 				  ;
 
-iteracion_tipo : HASTA! IDENT HACER! contenido
-			   | ATRAS! IDENT HACER! contenido
+iteracion_tipo : HASTA! resto_iteracion
+			   | ATRAS! resto_iteracion 
 			   ;
 
-			   
+resto_iteracion : valor_final HACER! contenido
+			    ;
+			    
+valor_final : IDENT
+			| LIT_ENTERO
+			;		
+		
+			    
 /////////////////////////////////////////////////////////////
 // EXPRESIONES 
 ////////////////////////////////////////////////////////////
@@ -498,20 +589,20 @@ expresion_nivel_7:
   ;    
 			
 acceso! : (IDENT PUNTO) => i1:IDENT PUNTO a1:acceso1
-			{#acceso = #(#[ACCESO_REGISTRO,"acceso_registro"],#i1,#a1);}
-		| (IDENT CORCHETE_ABIERTO indice CORCHETE_CERRADO PUNTO) => i2:IDENT CORCHETE_ABIERTO! ind1:indice CORCHETE_CERRADO! PUNTO! a2:acceso
-        	{#acceso = #(#[ACCESO_ARRAY_REGISTRO,"acceso_array_registro"],#i2, #ind1, #a2);}
-        | (IDENT CORCHETE_ABIERTO) => i3:IDENT CORCHETE_ABIERTO! ind2:indice CORCHETE_CERRADO!
-        	{#acceso = #(#[ACCESO_ARRAY,"acceso_array"],#i3, #ind2);}
+			{#acceso = #(#[ACCESO_REGISTRO,"acceso_registro"],ambitoTratarAccesoSimple(#i1),#a1);}
+		| (IDENT CORCHETE_ABIERTO indices CORCHETE_CERRADO PUNTO) => i2:IDENT CORCHETE_ABIERTO! ind1:indices CORCHETE_CERRADO! PUNTO! a2:acceso
+        	{#acceso = #(#[ACCESO_ARRAY_REGISTRO,"acceso_array_registro"],ambitoTratarAccesoSimple(#i2), #ind1, #a2);}
+        | (IDENT CORCHETE_ABIERTO) => i3:IDENT CORCHETE_ABIERTO! ind2:indices CORCHETE_CERRADO!
+        	{#acceso = #(#[ACCESO_ARRAY,"acceso_array"],ambitoTratarAccesoSimple(#i3), #ind2);}
         | i:IDENT
-        	{#acceso = #(#[ACCESO_SIMPLE,"acceso_simple"],#i);}
+        	{#acceso = ambitoTratarAccesoSimple(#i);}
         ;  
         
 acceso1! : (IDENT PUNTO) => i1:IDENT PUNTO a1:acceso1
 			{#acceso1 = #(#[ACCESO_REGISTRO,"acceso_registro"],#i1,#a1);}
-		 | (IDENT CORCHETE_ABIERTO indice CORCHETE_CERRADO PUNTO) => i2:IDENT CORCHETE_ABIERTO! ind1:indice CORCHETE_CERRADO! PUNTO! a2:acceso1
+		 | (IDENT CORCHETE_ABIERTO indices CORCHETE_CERRADO PUNTO) => i2:IDENT CORCHETE_ABIERTO! ind1:indices CORCHETE_CERRADO! PUNTO! a2:acceso1
         	{#acceso1 = #(#[ACCESO_ARRAY_REGISTRO,"acceso_array_registro"],#i2, #ind1, #a2);}
-         | (IDENT CORCHETE_ABIERTO) => i3:IDENT CORCHETE_ABIERTO! ind2:indice CORCHETE_CERRADO!
+         | (IDENT CORCHETE_ABIERTO) => i3:IDENT CORCHETE_ABIERTO! ind2:indices CORCHETE_CERRADO!
         	{#acceso1 = #(#[ACCESO_ARRAY,"acceso_array"],#i3, #ind2);}
          | i:IDENT
         	{#acceso1 = #(#[ACCESO_SIMPLE,"acceso_simple"],#i);}
