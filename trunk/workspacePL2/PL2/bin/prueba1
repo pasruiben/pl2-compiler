@@ -1,0 +1,35 @@
+  CONST
+    PI = 3.14; 
+    ALFA = 56;  	  
+  VAR  
+    REAL base, resultado; 
+    ENTERO exponente;
+    ARRAY [2,4] OF ENTERO a; 
+    1..-30 r;
+            
+  FUNCION REAL Potencia (REAL base, ENTERO exponente) 
+    ENTERO I; 
+    Potencia:= 1; 
+    DESDE i:=1 HASTA exponente HACER 
+      Potencia:= Potencia*base; 
+    END 
+ 
+  FUNCION LeerNumeros() 
+    ESCRIBIR ('SE VA CALCULAR LA POTENCIA Y DE X');
+    ESCRIBIR ('ESCRIBA BASE');
+    LEER (base);
+    ESCRIBIR ('ESCRIBA EXPONENTE');
+    LEER (exponente); 
+    END 
+    
+  FUNCION  MostrarResultado()
+  	ESCRIBIR ('EL RESULTADO ES');
+  	ESCRIBIR (resultado);
+  	END
+ 
+ BEGIN
+  p.ba := 4;
+  LeerNumeros();   
+  resultado := Potencia(base, exponente);   
+  MostrarResultado(); 
+END

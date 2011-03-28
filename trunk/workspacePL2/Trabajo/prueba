@@ -1,0 +1,35 @@
+PROGRAM calculosMatematicos;
+	CONST
+		PI = 3.14;
+	VAR
+		base, resultado: REAL;
+		exponente: INTEGER;
+	
+	FUNCTION Potencia (base:REAL, exponente:INTEGER):REAL;
+		VAR i:INTEGER
+		BEGIN
+			Potencia:= 1;
+			FOR i:=1 TO exponente DO
+				Potencia:= Potencia*base;
+		END
+	
+	PROCEDURE LeerNumeros()
+		BEGIN
+			WRITE ('SE VA CALCULAR LA POTENCIA Y DE X');
+			WRITE ('ESCRIBA BASE');
+			READ (base);
+			WRITE ('ESCRIBA EXPONENTE');
+			READ (exponente);
+		END
+	
+	PROCEDURE MostrarResultado()
+		BEGIN
+			WRITE ('EL RESULTADO ES');
+			WRITE (resultado);
+		END
+BEGIN
+	LeerNumeros();
+	resultado := Potencia(base, exponente);
+	MostrarResultado();
+END
+ 

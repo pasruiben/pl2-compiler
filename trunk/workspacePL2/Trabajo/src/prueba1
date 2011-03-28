@@ -1,0 +1,76 @@
+PROGRAM calculosMatematicos;
+
+	CONST
+		PI = 3.14;
+		cant = 10;
+		
+	TYPE
+		Fecha = RECORD
+			dia: -1..31 ;
+			mes: (7*cant)..12;
+			anio: 1..2010;
+			letra: 'a'..'z';
+		END
+
+		Persona = RECORD
+			apellido: STRING;
+			nombre: STRING[30];
+			nacimiento: Fecha;
+			miarray: ARRAY[4] OF REAL;
+			miarrayreg: ARRAY[4] OF Fecha;
+		END
+		
+	VAR
+		base, resultado: REAL;
+		exponente, cont: INTEGER;
+		grupo1: ARRAY[100,200] OF Persona;
+		personita: Persona;
+		fechita: Fecha;
+		mesecito, anio: 1..12;
+		nombrealumno: STRING[30];
+		a,b: ARRAY [-2..11,20,4..-12] OF INTEGER;
+		rc: 'a'..'h';
+
+	FUNCTION Potencia (base:REAL, exponente:INTEGER, rango:3..5*2):1..10
+		VAR 
+			i,j,k:INTEGER;
+		BEGIN
+			Potencia:= 8;
+			FOR cont:=16 TO 23 DO
+				Potencia := Potencia*2;
+		END
+
+	PROCEDURE LeerNumeros()
+		BEGIN
+			WRITE ('ESCRIBA BASE');
+			READ (base);
+		END
+
+BEGIN
+	rc := 'b';
+
+	personita := grupo1[4,5];
+	nombrealumno := personita.apellido;	
+	nombrealumno := grupo1[4,5].nombre;
+	anio := grupo1[4,5].nacimiento.anio;
+	base := personita.miarray[7];
+	mesecito := personita.miarrayreg[1].mes;
+	
+	IF 1 < 2 THEN
+		personita := personita;	
+	
+	LeerNumeros();
+	cont := Potencia(base, exponente, 7);	
+	
+	IF cont>=cant THEN
+		cont := cont - exponente;
+	ELSE
+		BEGIN
+			cont := cont + 3;
+		END
+		
+	WHILE cont<100 DO
+		BEGIN
+			cont := cont + 2;
+		END
+END
