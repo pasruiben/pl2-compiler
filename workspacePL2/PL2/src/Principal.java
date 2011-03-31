@@ -11,13 +11,13 @@ public class Principal
 	public static void main(String args[]) {
 		try 
 		{
-			FileInputStream fis = new FileInputStream("src/bateriaBorja");
+			FileInputStream fis = new FileInputStream("src/bateria");
 			Analex analex = new Analex(fis);
 			Anasint anasint = new Anasint(analex);
 			AST arbol = null;
 			anasint.programa();
 			arbol = anasint.getAST();
-			ASTFrame frame= new ASTFrame("src/bateriaBorja",arbol);
+			ASTFrame frame= new ASTFrame("src/bateria",arbol);
 			frame.setVisible(true);
 		}
 		catch(ANTLRException ae) 
