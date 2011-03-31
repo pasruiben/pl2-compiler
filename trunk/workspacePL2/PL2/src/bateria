@@ -1,0 +1,79 @@
+	CONST
+		PI = 3.14;
+		cant = 10;
+		
+	TYPE
+		Fecha = REGISTRO
+			-1..31 dia;
+			7..12 mes;
+			1..2010 anio;
+			'a'..'z' letra;
+		END
+
+		Persona = REGISTRO
+			CADENA apellido;
+			CADENA[30] nombre;
+			Fecha nacimiento;
+			ARRAY[4] OF REAL miarray;
+			ARRAY[4] OF Fecha miarrayreg;
+		END
+		
+	VAR
+		REAL base, resultado;
+		ENTERO exponente, cont;
+		ARRAY[100,200] OF Persona grupo1;
+		Persona personita;
+		Fecha fechita;
+		1..12 mesecito, anio;
+		CADENA[30] nombrealumno;
+		ARRAY [-2..11,20,4..-12] OF ENTERO a,b;
+		'a'..'h' rc;
+
+	FUNCION 1..10 Potencia (REAL base, ENTERO exponente, 3..5 rango)
+			ENTERO i,j,k;
+			Potencia:= 8;
+			DESDE cont:=16 HASTA 23 HACER
+				Potencia := Potencia*2;
+		END
+
+	FUNCION LeerNumeros()
+			ESCRIBIR ('ESCRIBA BASE');
+			LEER (base);
+			DESDE cont:=5 ATRAS 1 HACER
+				BEGIN
+					Potencia:=-(Potencia*Potencia);
+					Potencia:= Potencia + 3;
+				END 
+		END
+
+BEGIN
+	rc := 'b';
+
+	personita := grupo1[4,5];
+	nombrealumno := personita.apellido;	
+	nombrealumno := grupo1[4,5].nombre;
+	anio := grupo1[4,5].nacimiento.anio;
+	base := personita.miarray[7];
+	mesecito := personita.miarrayreg[1].mes;
+	
+	SI 1 < 2
+		personita := personita;	
+	
+	LeerNumeros();
+	cont := Potencia(base, exponente, 7);	
+	
+	SI cont>=cant
+		cont := cont - exponente;
+	SINO
+		BEGIN
+			cont := cont + 3;
+		END
+		
+	MIENTRAS cont<100 HACER
+		BEGIN
+			cont := cont + 2;
+		END
+	
+	MIENTRAS cont<100 HACER
+			cont := cont + 2;	
+END

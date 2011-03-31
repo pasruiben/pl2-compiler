@@ -565,8 +565,10 @@ expresion_nivel_3 :
   ((MAYOR^|MAYOR_IGUAL^|MENOR^|MENOR_IGUAL^|IGUAL^|DISTINTO^) 
     expresion_nivel_4)? ;
 
-expresion_nivel_4 :
-     expresion_nivel_5 ((MAS^|MENOS^) expresion_nivel_5)* ;
+//expresion_nivel_4 :
+  //   expresion_nivel_5 ((MAS^|MENOS^) expresion_nivel_5)* ;
+     
+expresion_nivel_4 : (expresion_nivel_5 (MAS^|MENOS^)) => (expresion_nivel_5 (MAS^|MENOS^) expresion_nivel_5) | expresion_nivel_5 ;
    
 expresion_nivel_5 :
       expresion_nivel_6 ((POR^|DIVISION^) expresion_nivel_6)* ;
